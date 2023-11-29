@@ -1,0 +1,171 @@
+ body {
+  margin-top: 0px;
+  background: var(--dcream);
+
+  /*COLORS*/
+  --white: #F7F1E1;
+  --cream: #F6E6CB;
+  --dcream: #EACEA3;
+  --beige: #CDAD93;
+  --terracotta: #B9816D;
+  --dterracotta: #885444;
+  --peach: #E5AE8A;
+  --orange: #BF835A;
+  --green: #4B5243;
+  --dgreen: #2C3834;
+
+  /*FONTS*/
+  --mono: 'source-code-pro';
+  --display: 'lust-sans';
+}
+
+.minip {
+  width: 320px;
+  height: 450px;
+  background: var(--white);
+  float: left;
+  margin-left: 80px;
+  margin-bottom: 10px;
+  position:relative;
+  box-shadow: 0px 0px 5px var(--terracotta);
+}
+
+.minip .mg {
+  width: 100%;
+  height: 200px;
+  position: relative;
+  top: 0px;
+  left: 0px;
+  display: grid;
+  grid-template-columns: 300px 50px;
+  grid-template-rows: 100px 150px;
+  grid-template-areas:
+    'clr group'
+    'clr .....';
+  transition:
+    grid-template-columns .6s linear,
+    grid-template-rows .6s linear;
+}
+.minip:hover .mg {
+  grid-template-columns: 150px 200px;
+  grid-template-rows: 50px 300px;
+  transition:
+    grid-template-columns .6s linear,
+    grid-template-rows .6s linear;
+}
+.minip .mg .clr {
+  grid-area: clr;
+  background: var(--green);
+}
+.minip .mg .group {
+  font: 10px var(--mono);
+  position: left;
+  margin-left: -25px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  writing-mode: vertical-lr;
+  display: flex;
+  align-items:center;
+  justify-content: center;
+}
+.minip .mg .group span {
+  transform: rotate(180deg);
+  transition:
+    transform .6s linear;
+}
+.minip:hover .mg .group span {
+  transform: rotate(270deg);
+  margin-left:15px;
+  transition:
+    transform .6s linear;
+}
+
+.minip .av {
+  width: 210px;
+  height: 350px;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  background: var(--green);
+  background-position: top center;
+  background-size: cover;
+  transition:
+    width .6s linear,
+    height .6s linear;
+}
+.minip:hover .av {
+  width: 200px;
+  height: 400px;
+  transition:
+    width .6s linear,
+    height .6s linear;
+}
+
+.minip .info {
+  width: 220px;
+  min-height: 130px;
+  padding: 25px;
+  position: absolute;
+  bottom: 100px;
+  left: 0px;
+  background: var(--peach);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-content: flex-start;
+  transition:
+    bottom .6s linear;
+}
+.minip:hover .info {
+  bottom: 50px;
+  transition:
+    bottom .6s linear;
+}
+.minip .info name {
+  font: 180 20px/25px var(--display);
+  text-indent: 20px;
+  letter-spacing: 1px;
+  margin: 0px 0px 0px 10px;
+}
+.minip .info deets {
+  font: 10px/15px var(--mono);
+  margin-left:30px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.minip  .btn {
+  width: 80px;
+  height: 30px;
+  text-align: left;
+  bottom: 125px;
+  position: absolute;
+  background: var(--dgreen);
+  font: 10px/10px var(--mono);
+  text-transform: uppercase;
+  color: var(--white);
+  text-decoration: none;
+  letter-spacing: 1px;
+  display: flex;
+  transition:
+    bottom .6s linear;
+}
+.minip:hover .btn {
+  bottom: 175px;
+  transition:
+    bottom .6s linear;
+}
+.minip .dropdown-menu{
+  font: 10px var(--mono);
+  text-transform: uppercase;
+  color: var(--white);
+  background: black;
+  position: absolute;
+  bottom: -145px;
+}
+.minip .image{
+ display:none;
+ width: 300px;
+ height: 300px;
+ position: relative;
+}

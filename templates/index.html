@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Стой, Ты не пройдешь</title>
+    {% load static %}
+  <link rel="stylesheet" type = "text/css" href= "{%static 'CSS/reg.css' %}"/>
+</head>
+<body>
+<div class="login">
+  <form method="post">
+    {%csrf_token%}
+    <h2><i>Средиземье</i></h2>
+    <input type="username" name="username" placeholder="Имя" required="">
+    <input type="password" name="password" placeholder="Ранг в гильдии" required="">
+    <button type="submit" class="btn btn-default" >
+        Войти
+    </button>
+  </form>
+  </div>
+</body>
+</html>

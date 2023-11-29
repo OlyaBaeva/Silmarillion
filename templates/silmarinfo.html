@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Личное дело</title>
+
+    {% load static %}
+    {% load index %}
+    <link rel="stylesheet" type = "text/css" href= "{%static 'CSS/quests.css' %}"/>
+    <link rel="stylesheet" type = "text/css" href= "{%static 'view.css' %}"/>
+    <link rel="stylesheet" type = "text/css" href= "{%static 'CSS/Map.css' %}"/>
+    <link rel="stylesheet" type = "text/css" href= "{%static 'CSS/PROBLEMS.css' %}"/>
+
+    <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="main-container">
+  <div class="left-sidebar">
+    <div class="inner">
+      <div class="user-profile">
+        <div class="user-background"></div>
+        <div class="user-image">
+          <img src="https://gravatar.com/avatar/de84db04b0c7b43efdc840391ffe56ff">
+        </div>
+
+
+      <div class="user-info">
+          <p>Личная информация</p>
+          <p class="user-name">{{ par.name }} </p>
+          <p class="user-title">{{ user.first_name }}</p>
+          <p class="user-location">
+             {{ par.status }}
+          </p>
+
+        </div>
+      </div>
+      <div class="social-links">
+        <form class="d-flex">
+    <a href = "{% url 'logout' %}" class="btn" style="text-align:center" type="submit">Exit</a>
+  </form>
+        <a href="#"><i class="icon ion-logo-twitter"></i></a>
+        <a href="#"><i class="icon ion-logo-instagram"></i></a>
+      </div>
+    </div>
+    <div class="toggle-button"><svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+  <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+</svg></div>
+  </div>
+  <div class="main-content">
+ <div class = "personal personal-issues">{% for being in beings %}
+<div class="minip" >
+  <div class="mg">
+    <div class="clr"></div>
+    <div class="group" style="color:black;">
+      <span>{{being.time}}</span>
+    </div>
+  </div>
+  <div class="av" ></div>
+  <div class="info" >
+    <name>{{being.name}}</name>
+    <deets>
+        {{being.age}} › {{being.specie}}<br>
+           Silmarillion
+    </deets>
+
+  </div>
+      <ul class="list-group mx-auto" style="width:110px;color:black;">
+          <div class="btn-group dropend" style="color:black;">
+              <button id={{"but_"|add:being.id }} type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true" >
+                ИЗУЧИТЬ ДЕЛО
+              </button>
+              <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="https://ru.wikipedia.org/wiki/{{being.name}}">Общая информация</a></li>
+                  <li><a class="dropdown-item" href="{% url 'secure' being.id %}">Секретно</a></li>
+                  <li><a class="dropdown-item" href="{% url 'secure' being.id %}">Совершенно секретно</a></li>
+              </ul>
+          </div>
+      </ul>
+    {% if tryGet|index:forloop.counter0 == 1 %}
+       <img  id="img_being.id "class ="image" style="margin-top:-90px;margin-left:40px;display:inline" src="/static/images/top.png">
+    {% endif %}
+</div>
+    {% endfor %}</div>
+
+    <div class="modal music-player" style="height:680px;  width:620px; position:relative">
+
+        <svg id="map" width="100%" height="100%" style="background-color:white">
+           <image id="image" href='/static/images/bigmap.jpeg'  width="820px" height="680px"/>
+            <script type="module">
+       import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
+const svg = d3.select("#map");
+// create a D3 selection of the image element
+const image = svg.selectChild("#image");
+const { width, height } = image.node().getBoundingClientRect();
+const { width: svgWidth, height: svgHeight } = svg
+    .node()
+    .getBoundingClientRect();
+const zoom = d3
+    .zoom()
+    // scale extent is how much you can zoom into or out of the image - https://github.com/d3/d3-zoom#zoom_scaleExtent
+    .scaleExtent([1, 8])
+    // extent is mostly used to calculate things and make them smooth during zooming and panning - https://github.com/d3/d3-zoom#zoom_extent
+    // by default it is the viewbox or width and height of the nearest SVG ancestor - this works for us
+    .extent([
+    [0, 0],
+    [svgWidth, svgHeight],
+])
+    // translate extent is optional and is used to bound the viewport to the image - https://github.com/d3/d3-zoom#zoom_translateExtent
+    .translateExtent([
+    [0, 0],
+    [width, height],
+])
+    .on("zoom", zoomed);
+// apply configured zoom behaviour to our svg
+svg.call(zoom);
+function zoomed(event) {
+    const { transform } = event;
+    // apply calculated transform to the image
+    image.attr("transform", transform.toString());
+}
+</script>
+     </svg>
+    </div>
+
+    <div class="modal timer-display">
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+    <div class="direct-messaging minimize">
+      <div class="header-container">
+        <div>
+          <img src="https://gravatar.com/avatar/de84db04b0c7b43efdc840391ffe56ff">
+        </div>
+        <div class="header-user">
+          <span>Dani</span>
+          <span class="online"></span>
+        </div>
+        <div class="close-chat-btn"><i class="icon ion-ios-arrow-down"></i></div>
+
+      </div>
+      <div class="message-container">
+        <div class="msg received">
+          <p><span class="time">10:50pm</span></p>
+          <p class="text">Hi!</p>
+        </div>
+        <div class="msg received">
+          <p class="text">How are you today?</p>
+        </div>
+        <div class="msg sent">
+          <p class="time">10:51pm</p>
+          <p class="text">Hi Daniela, doing good thanks, yourself?</p>
+        </div>
+      </div>
+      <div class="send-container">
+        <input class="type-message" placeholder="Your message ...">
+        </input>
+        <div class="send-btn"><i class="icon ion-md-send"></i></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="right-sidebar">
+    <div class="btn open-music-btn" style="text-align: center;"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-map" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M15.817.113A.5.5 0 0 1 16 .5v14a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 15.01l-4.902.98A.5.5 0 0 1 0 15.5v-14a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0L10.5.99l4.902-.98a.5.5 0 0 1 .415.103zM10 1.91l-4-.8v12.98l4 .8V1.91zm1 12.98 4-.8V1.11l-4 .8v12.98zm-6-.8V1.11l-4 .8v12.98l4-.8z"/>
+</svg>
+    </div>
+    <div class="btn open-timer-btn"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="white" class="bi bi-binoculars" viewBox="0 0 16 16">
+  <path d="M3 2.5A1.5 1.5 0 0 1 4.5 1h1A1.5 1.5 0 0 1 7 2.5V5h2V2.5A1.5 1.5 0 0 1 10.5 1h1A1.5 1.5 0 0 1 13 2.5v2.382a.5.5 0 0 0 .276.447l.895.447A1.5 1.5 0 0 1 15 7.118V14.5a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 14.5v-3a.5.5 0 0 1 .146-.354l.854-.853V9.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v.793l.854.853A.5.5 0 0 1 7 11.5v3A1.5 1.5 0 0 1 5.5 16h-3A1.5 1.5 0 0 1 1 14.5V7.118a1.5 1.5 0 0 1 .83-1.342l.894-.447A.5.5 0 0 0 3 4.882V2.5zM4.5 2a.5.5 0 0 0-.5.5V3h2v-.5a.5.5 0 0 0-.5-.5h-1zM6 4H4v.882a1.5 1.5 0 0 1-.83 1.342l-.894.447A.5.5 0 0 0 2 7.118V13h4v-1.293l-.854-.853A.5.5 0 0 1 5 10.5v-1A1.5 1.5 0 0 1 6.5 8h3A1.5 1.5 0 0 1 11 9.5v1a.5.5 0 0 1-.146.354l-.854.853V13h4V7.118a.5.5 0 0 0-.276-.447l-.895-.447A1.5 1.5 0 0 1 12 4.882V4h-2v1.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V4zm4-1h2v-.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5V3zm4 11h-4v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14zm-8 0H2v.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14z"/>
+</svg></div>
+    <div class="btn open-chat-btn"><i class="icon ion-md-chatbubbles"></i></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+   $(".toggle-button").on("click", function () {
+  $(".left-sidebar").toggleClass("minimize");
+});
+
+$(".user-profile").on("click", function () {
+  $(".left-sidebar").toggleClass("minimize");
+});
+
+$(".close-chat-btn").on("click", function () {
+  $(".direct-messaging ").addClass("minimize");
+});
+
+$(".open-chat-btn").on("click", function () {
+  $(".direct-messaging ").toggleClass("minimize");
+});
+var clickMus = false;
+var clickTime = false;
+var isAnyButtonClicked = false; // Устанавливаем начальное значение флага
+
+$(".open-music-btn, .open-timer-btn").on("click", function() {
+  isAnyButtonClicked = true;
+});
+
+$(".open-music-btn").on("click", function () {
+
+  $(".music-player").toggleClass("show");
+
+  if (isAnyButtonClicked && $(".personal-issues").hasClass("show") && !clickTime) {
+    clickMus = false;
+    $(".personal-issues").removeClass("show");
+    isAnyButtonClicked = false; // Сбрасываем флаг
+  }
+  if (isAnyButtonClicked && $(".personal-issues").hasClass("show") && clickTime) {
+    clickTime = false;
+    clickMus = true;
+    }
+  if (isAnyButtonClicked && !$(".personal-issues").hasClass("show")) {
+    clickMus = true;
+    clickTime = false;
+    $(".personal-issues").toggleClass("show");
+    isAnyButtonClicked = false; // Сбрасываем флаг
+  }
+
+  $(".timer-display").removeClass("show");
+});
+
+$(".open-timer-btn").on("click", function () {
+  $(".timer-display").toggleClass("show");
+
+   if (isAnyButtonClicked && $(".personal-issues").hasClass("show") && !clickMus) {
+    clickTime = false;
+    $(".personal-issues").removeClass("show");
+    isAnyButtonClicked = false;
+  }
+   if (isAnyButtonClicked && $(".personal-issues").hasClass("show") && clickMus) {
+    clickTime = true;
+    clickMus = false;
+   }
+
+  if (isAnyButtonClicked && !$(".personal-issues").hasClass("show") ) {
+    clickTime = true;
+    clickMus = false;
+    $(".personal-issues").toggleClass("show");
+    isAnyButtonClicked = false; // Сбрасываем флаг
+  }
+  $(".music-player").removeClass("show");
+});
+
+  </script>
+<script type="module">
+       import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
+const svg = d3.select("#map");
+// create a D3 selection of the image element
+const image = svg.selectChild("#image");
+const { width, height } = image.node().getBoundingClientRect();
+const { width: svgWidth, height: svgHeight } = svg
+    .node()
+    .getBoundingClientRect();
+const zoom = d3
+    .zoom()
+    // scale extent is how much you can zoom into or out of the image - https://github.com/d3/d3-zoom#zoom_scaleExtent
+    .scaleExtent([1, 8])
+    // extent is mostly used to calculate things and make them smooth during zooming and panning - https://github.com/d3/d3-zoom#zoom_extent
+    // by default it is the viewbox or width and height of the nearest SVG ancestor - this works for us
+    .extent([
+    [0, 0],
+    [svgWidth, svgHeight],
+])
+    // translate extent is optional and is used to bound the viewport to the image - https://github.com/d3/d3-zoom#zoom_translateExtent
+    .translateExtent([
+    [0, 0],
+    [width, height],
+])
+    .on("zoom", zoomed);
+// apply configured zoom behaviour to our svg
+svg.call(zoom);
+function zoomed(event) {
+    const { transform } = event;
+    // apply calculated transform to the image
+    image.attr("transform", transform.toString());
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+</body>
+</html>

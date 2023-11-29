@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Карта Средиземья</title>
+    {% extends 'silmarinfo.html'%}
+    {% load static %}
+  <link rel="stylesheet" type = "text/css" href= "{%static 'CSS/map.css' %}"/>
+</head>
+<body>
+<div class="container">
+     <svg id="map" width="100%" height="100%" style="background-color:white">
+     <image id="image" href='/static/images/bigmap.jpeg'  width="820px" height="680px"/>
+      <script type="module">
+       import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
+const svg = d3.select("#map");
+// create a D3 selection of the image element
+const image = svg.selectChild("#image");
+const { width, height } = image.node().getBoundingClientRect();
+const { width: svgWidth, height: svgHeight } = svg
+    .node()
+    .getBoundingClientRect();
+const zoom = d3
+    .zoom()
+    // scale extent is how much you can zoom into or out of the image - https://github.com/d3/d3-zoom#zoom_scaleExtent
+    .scaleExtent([1, 8])
+    // extent is mostly used to calculate things and make them smooth during zooming and panning - https://github.com/d3/d3-zoom#zoom_extent
+    // by default it is the viewbox or width and height of the nearest SVG ancestor - this works for us
+    .extent([
+    [0, 0],
+    [svgWidth, svgHeight],
+])
+    // translate extent is optional and is used to bound the viewport to the image - https://github.com/d3/d3-zoom#zoom_translateExtent
+    .translateExtent([
+    [0, 0],
+    [width, height],
+])
+    .on("zoom", zoomed);
+// apply configured zoom behaviour to our svg
+svg.call(zoom);
+function zoomed(event) {
+    const { transform } = event;
+    // apply calculated transform to the image
+    image.attr("transform", transform.toString());
+}
+</script>
+     </svg>
+    </div>
+</body>
+</html>

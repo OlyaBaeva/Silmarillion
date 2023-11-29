@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    {% load static %}
+    <link rel="stylesheet" type = "text/css" href= "{%static 'CSS/PROBLEMS.css' %}"/>
+
+<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/5bc7063be8.js" crossorigin="anonymous"></script>
+<body>
+
+<div class="main-container">
+  <div class="left-sidebar">
+    <div class="inner">
+      <div class="user-profile">
+        <div class="user-background"></div>
+        <div class="user-image">
+          <img src="https://gravatar.com/avatar/de84db04b0c7b43efdc840391ffe56ff">
+        </div>
+        <div class="user-info">
+          <p class="user-name">Daniela Desira</p>
+          <p class="user-title">Front End Developer</p>
+          <p class="user-location">
+            <i class="icon ion-md-locate"></i> Malta
+          </p>
+        </div>
+      </div>
+      <div class="main-menu"></div>
+      <div class="social-links">
+        <a href="#"><i class="icon ion-logo-facebook"></i></a>
+        <a href="#"><i class="icon ion-logo-twitter"></i></a>
+        <a href="#"><i class="icon ion-logo-instagram"></i></a>
+      </div>
+    </div>
+    <div class="toggle-button"><i class="icon ion-md-arrow-dropleft"></i></div>
+  </div>
+  <div class="main-content">
+
+    <div class="modal music-player">
+
+    </div>
+    <div class="modal timer-display">
+      <p>LDLDLDLDL</p>
+    </div>
+
+    <div class="direct-messaging minimize">
+      <div class="header-container">
+        <div>
+          <img src="https://gravatar.com/avatar/de84db04b0c7b43efdc840391ffe56ff">
+        </div>
+        <div class="header-user">
+          <span>Dani</span>
+          <span class="online"></span>
+        </div>
+        <div class="close-chat-btn"><i class="icon ion-ios-arrow-down"></i></div>
+
+      </div>
+      <div class="message-container">
+        <div class="msg received">
+          <p><span class="time">10:50pm</span></p>
+          <p class="text">Hi!</p>
+        </div>
+        <div class="msg received">
+          <p class="text">How are you today?</p>
+        </div>
+        <div class="msg sent">
+          <p class="time">10:51pm</p>
+          <p class="text">Hi Daniela, doing good thanks, yourself?</p>
+        </div>
+      </div>
+      <div class="send-container">
+        <input class="type-message" placeholder="Your message ..."></input>
+        <div class="send-btn"><i class="icon ion-md-send"></i></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="right-sidebar">
+    <div class="btn open-music-btn"><i class="icon ion-md-musical-notes"></i></div>
+    <div class="btn open-timer-btn"><i class="icon ion-md-timer"></i></div>
+    <div class="btn open-chat-btn"><i class="icon ion-md-chatbubbles"></i></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+   $(".toggle-button").on("click", function () {
+  $(".left-sidebar").toggleClass("minimize");
+});
+
+$(".user-profile").on("click", function () {
+  $(".left-sidebar").toggleClass("minimize");
+});
+
+$(".close-chat-btn").on("click", function () {
+  $(".direct-messaging ").addClass("minimize");
+});
+
+$(".open-chat-btn").on("click", function () {
+  $(".direct-messaging ").toggleClass("minimize");
+});
+
+$(".open-music-btn").on("click", function () {
+  $(".music-player").toggleClass("show");
+});
+
+$(".open-timer-btn").on("click", function () {
+  $(".timer-display").toggleClass("show");
+});
+  </script>
+<script type="module">
+       import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+
+const svg = d3.select("#map");
+// create a D3 selection of the image element
+const image = svg.selectChild("#image");
+const { width, height } = image.node().getBoundingClientRect();
+const { width: svgWidth, height: svgHeight } = svg
+    .node()
+    .getBoundingClientRect();
+const zoom = d3
+    .zoom()
+    // scale extent is how much you can zoom into or out of the image - https://github.com/d3/d3-zoom#zoom_scaleExtent
+    .scaleExtent([1, 8])
+    // extent is mostly used to calculate things and make them smooth during zooming and panning - https://github.com/d3/d3-zoom#zoom_extent
+    // by default it is the viewbox or width and height of the nearest SVG ancestor - this works for us
+    .extent([
+    [0, 0],
+    [svgWidth, svgHeight],
+])
+    // translate extent is optional and is used to bound the viewport to the image - https://github.com/d3/d3-zoom#zoom_translateExtent
+    .translateExtent([
+    [0, 0],
+    [width, height],
+])
+    .on("zoom", zoomed);
+// apply configured zoom behaviour to our svg
+svg.call(zoom);
+function zoomed(event) {
+    const { transform } = event;
+    // apply calculated transform to the image
+    image.attr("transform", transform.toString());
+}
+</script>
+</body>
+</html>
