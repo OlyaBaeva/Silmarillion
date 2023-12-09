@@ -1,11 +1,19 @@
+import io
 from lib2to3.pgen2 import driver
+
+from PIL import Image
+from django.conf import settings
+from django.contrib import messages
+from django.core.files.images import ImageFile
+from django.http import JsonResponse
 from translate import Translator
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
-
+import pytesseract
+from django.core.mail import send_mail
 from silmarin.forms import Access
-from silmarin.models import Being, Silmarillion, Person, Status
+from silmarin.models import Being, Silmarillion, Person, Status, Quests
 
 
 def quests(request):
@@ -19,27 +27,30 @@ def quests(request):
             'status': par.status,
         }
         if user.groups.filter(name="Гильдмастер").exists():
-            print(context)
             # be = Being.objects.get(id_being_id=user.id)
             beings = Being.objects.all()
-            print(beings)
             tryGet = [0 for i in range(len(beings))]
-            return render(request, "quests.html", {"beings": beings, "tryGet": tryGet, "par": context})
+            quests = Quests.objects.all()
+            return render(request, "quests.html",
+                          {"beings": beings, "tryGet": tryGet, "par": context, "quests": quests})
         else:
-            print("bbbbb")
-
             creature = []
             beings = Being.objects.all()
             tryGet = [0 for i in range(len(beings))]
             specie = Being.objects.filter(name=user.first_name).values_list('specie', flat=True).first()
-            print(specie)
+            quests = Quests.objects.all()
+            questforuser=[]
+            for i in range(len(quests)):
+                if par.status in quests[i].statuses.all():
+                    questforuser.append(quests[i])
             for i in range(len(beings)):
                 if beings[i].specie == specie:
                     creature.append(beings[i])
-            print(creature)
-            return render(request, "quests.html", {"beings": creature, "tryGet": tryGet, "par": context})
+            return render(request, "quests.html", {"beings": creature, "tryGet": tryGet, "par": context, "quests": questforuser})
     else:
         return render(request, 'NoEnter.html')
+
+
 
 def time(request):
     user = request.user
@@ -48,6 +59,23 @@ def time(request):
         groups = Silmarillion.objects.all()
         return render(request, "time.html", {"groups": groups})
 
+def forget(request):
+   if request.method == "GET":
+     return render(request, "password.html")
+   else:
+       email = request.POST.get("logemail_l")
+       try:
+         user = User.objects.get(email__exact=email)
+       except:
+         messages.error(request, 'Нет пользователя с таким email')
+         return redirect('/password/')
+       send_mail('Смена пароля', 'Ваш временный пароль: 123456a', settings.EMAIL_HOST_USER, [email])
+       user.set_password("123456a")
+       user.save()
+       return redirect('/')
+
+
+'''    
 def view(request):
    print("dddd")
    user = request.user
@@ -63,7 +91,7 @@ def view(request):
           #be = Being.objects.get(id_being_id=user.id)
           beings = Being.objects.all()
           tryGet = [0 for i in range(len(beings))]
-          return render(request, "silmarinfo.html", {"beings": beings, "tryGet": tryGet, "par": context})
+          return render(request, "quests.html", {"beings": beings, "tryGet": tryGet, "par": context})
        else:
            creature=[]
            beings = Being.objects.all()
@@ -72,10 +100,10 @@ def view(request):
            for i in range(len(beings)):
               if beings[i].specie == specie:
                   creature.append(beings[i])
-           return render(request, "silmarinfo.html", {"beings": creature, "tryGet": tryGet, "par": par})
+           return render(request, "quests.html", {"beings": creature, "tryGet": tryGet, "par": par})
    else:
       return render(request, 'NoEnter.html')
-
+'''
 
 def show_index(request):
     if request.method == "GET":
@@ -120,7 +148,7 @@ def show_index(request):
 
 def show_map(request):
     if request.user.is_authenticated:
-       return render(request, "Map.html")
+        return render(request, 'Map.html')
     else:
         return render(request, 'NoEnter.html')
 

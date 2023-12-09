@@ -66,6 +66,19 @@ class Person(models.Model):
 
 
     def __str__(self):
-        return "Личная информация: " + " " + self.user.username + " " + self.specie + " " + self.position+" " + self.status
+        return "Личная информация: " + " " + self.user.username + " " + self.specie + " " + self.position
     class Meta:
         db_table = "Person"
+
+class Quests(models.Model):
+    name = models.CharField(max_length=200, verbose_name="Название квеста")
+    description = models.TextField(verbose_name="Описание")
+    statuses = models.ManyToManyField(Status)
+    quantity = models.IntegerField(max_length=200, verbose_name="Количество",
+                            help_text="Введите необходимое количество участников", null=False, blank=False )
+
+
+    def __str__(self):
+        return "Квест: " + " " + self.name + " " + self.description + " " + self.quantity.__str__()
+    class Meta:
+        db_table = "Quests"

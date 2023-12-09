@@ -5,67 +5,31 @@
     <title>Title</title>
 	{% extends 'silmarinfo.html' %}
     {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
 
 </head>
 <body>
 
 <div class="content">
 	{% block content %}
+	{% for quest in quests %}
 	<ul class="team">
 		<li class="member co-funder">
 			<div class="thumb"><img src="https://assets.codepen.io/3/internal/avatars/users/default.png?fit=crop&format=auto&height=120&width=120"></div>
-			<div class="description">
-				<h3>Chris Coyier</h3>
-				<p>Chris is a front-end developer and designer. He writes a bunch of HTML, CSS, and JavaScript and shakes the pom-poms for CodePen.<br><a href="https://codepen.io/chriscoyier/">@chriscoyier</a></p>
-			</div>
-		</li>
-		<li class="member co-funder">
-			<div class="thumb"><img src="https://assets.codepen.io/2/internal/avatars/users/default.png?height=120&width=120"></div>
-			<div class="description">
-				<h3>Alex Vazquez</h3>
-				<p>Alex is a full stack developer. Alex does JavaScript development for CodePen, both front end and back, and just about everything else.<br><a href="https://codepen.io/quezo/">@quezo</a></p>
-			</div>
-		</li>
-		<li class="member">
-			<div class="thumb"><img src="https://assets.codepen.io/652/internal/avatars/users/default.png?height=120&width=120"></div>
-			<div class="description">
-				<h3>Marie Mosley</h3>
-				<p>Marie wears a lot of hats. She is our documentation lead, customer support maestra, editor, and community manager.<br><a href="https://codepen.io/mariemosley/">@mariemosley</a></p>
-			</div>
-		</li>
-		<li class="member">
-			<div class="thumb"><img src="https://assets.codepen.io/39255/internal/avatars/users/default.png?height=120&width=120"></div>
-			<div class="description">
-				<h3>Stephen Shaw</h3>
-				<p>Stephen is a designer/developer residing in Houston. He likes to build animations with CSS & JavaScript.<br><a href="https://codepen.io/shshaw/">@shshaw</a></p>
-			</div>
-		</li>
-
-		<li class="member">
-			<div class="thumb"><img src="https://cpwebassets.codepen.io/assets/packs/about-rachelsmith-6878ca76a1d9200e6c296e810050b8cb.jpg?height=120&width=120"></div>
-			<div class="description">
-				<h3>Rachel Smith</h3>
-				<p>Rachel is a full stack'er in Australia. Not only a creative and talented designer and developer, but a great technical writer.<br><a href="https://codepen.io/rachsmith/">@rachsmith</a></p>
-			</div>
-		</li>
-		<li class="member">
-			<div class="thumb"><img src="https://cpwebassets.codepen.io/assets/packs/about-robertkieffer-77c28f3a6efe082fd1903affae540b8a.jpg?height=120"></div>
-			<div class="description">
-				<h3>Robert Kieffer</h3>
-				<p>Robert is a full-stack dev with a penchant for open-source work. He dwells in the murky depthsmurky depths of JS.<br><a href="https://codepen.io/broofa/">@broofa</a></p>
-			</div>
-		</li>
-
-		<li class="member">
-			<div class="thumb"><img src="https://cpwebassets.codepen.io/assets/packs/about-deevazquez-c8e8b7f9e803f462b7be19ea60b9272f.jpg?height=120&width=120"></div>
-			<div class="description">
-				<h3>Dee Vazquez</h3>
-				<p>Dee is a full stack developer who started her career in finance. She can jump from Rails to React to Go, and also manage our finances.<br><a href="https://codepen.io/deequez/">@deequez</a></p>
+			<div class="description" style = "color:black; font-size: 20px">
+				<h3>{{ quest.name }}</h3>
+				<p>{{ quest.description }}<br></p>
+				<p>Классы: {% for s in quest.statuses.all %} {{ s.status }} , {% endfor %} <br></p>
+				<button type="submit" class="btn" >
+					Участвовать
+                </button>
 			</div>
 		</li>
 	</ul>
+	{% endfor %}
 {% endblock %}
 </div>
-
 </body>
 </html>
