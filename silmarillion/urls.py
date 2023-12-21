@@ -22,7 +22,6 @@ from silmarin import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     #path('quests/', views.view, name='quests'),
-    path('acc/', views.acc, name='acc'),
     path('password/', views.forget, name='forget'),
     path('info/', views.quests, name='info'),
     path('time/', views.time),

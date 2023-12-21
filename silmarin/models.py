@@ -82,3 +82,12 @@ class Quests(models.Model):
         return "Квест: " + " " + self.name + " " + self.description + " " + self.quantity.__str__()
     class Meta:
         db_table = "Quests"
+
+class ActingCharacters(models.Model):
+    id = models.IntegerField(max_length=200, primary_key= True, verbose_name="Id")
+    quest = models.ForeignKey(Quests, on_delete=models.CASCADE)
+    people = models.ForeignKey(Person, on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        db_table = "ActingCharacters"
+

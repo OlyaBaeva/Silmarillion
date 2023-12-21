@@ -135,10 +135,10 @@
 }
 
 .minip  .btn {
-  width: 80px;
+  width: 120px;
   height: 30px;
   text-align: left;
-  bottom: 25px;
+  bottom: -145px;
   position: absolute;
   background: var(--dgreen);
   font: 10px/10px var(--mono);
@@ -151,7 +151,7 @@
     bottom .6s linear;
 }
 .minip:hover .btn {
-  bottom: -175px;
+  bottom: -195px;
   transition:
     bottom .6s linear;
 }

@@ -1,35 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<style type="text/css">
+    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Josefin+Slab&family=Rubik+Doodle+Shadow&display=swap');
+
+       .spoiler_body { display: none;}
+      .spoiler_links { cursor: pointer;font-family=Caveat;text-transform: uppercase; font-weight: 300; text-decoration: none; }
+      .blue { color: #000000; }
+      .green { color: #009900; }
+
+    </style>
     <meta charset="UTF-8">
     <title>Title</title>
 	{% extends 'silmarinfo.html' %}
     {% load static %}
+
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 	<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
-
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js">
+</script>
 </head>
 <body>
 
 <div class="content">
 	{% block content %}
+    {% if flag == False %}
 	{% for quest in quests %}
 	<ul class="team">
 		<li class="member co-funder">
 			<div class="thumb"><img src="https://assets.codepen.io/3/internal/avatars/users/default.png?fit=crop&format=auto&height=120&width=120"></div>
 			<div class="description" style = "color:black; font-size: 20px">
+
 				<h3>{{ quest.name }}</h3>
 				<p>{{ quest.description }}<br></p>
 				<p>Классы: {% for s in quest.statuses.all %} {{ s.status }} , {% endfor %} <br></p>
-				<button type="submit" class="btn" >
+				<form method="post">
+	             {%csrf_token%}
+                {% if messages %}
+					<ul class="messages">
+						{% for message in messages %}
+						<li class="{{ message.tags }}"> {{ message }}
+							{% endfor %}
+					</ul>
+					{% endif %}
+				<input type="hidden" name="quest_id" value="{{ quest.id }}">
+				<button id= "button" type="submit" class="btn" >
 					Участвовать
                 </button>
+				</form>
+
 			</div>
 		</li>
 	</ul>
 	{% endfor %}
+	{% endif %}
+{% if flag == True %}
+	{% for people in people %}
+	<ul class="team">
+		<li class="member ">
+			<div class="description" style = "color:black; font-size: 20px; ">
+				<h3> {{ people.0 }}</h3>
+				<div class="spoiler_links blue" style="margin: 1em 0 0 1em; font-family: Lato, Arial, Helvetica, serif;">Кликните, чтобы посмотреть участников</div>
+				<div class="spoiler_body" >
+					{% for i in people.1 %}
+					<form name="select_all" method="post" style="margin-left: 35px;">
+						{%csrf_token%}
+						<input type="checkbox" name="list" value="{{i}}" > {{ i }}<br>
+					{% endfor %}
+                 <input type="button" value="Выделить все" style="padding: 0 20px;color:#ffdd40;border-radius: 8px;background-color: #555555;" onclick="check(this.form.list, 1)">
+                   <input type="button" value="Снять выделение" style="padding: 0 20px;color:#ffdd40;border-radius: 8px;background-color: #555555;" onclick="check(this.form.list, 0)">
+						<input type="hidden" name="people_id" value="{{ people.id }}">
+						<div class="container" style="margin: 0.5em 0 0 0">
+                        <button id="button1" style="color:#bbbbbb; padding: 0 20px; border-radius: 8px;background-color:#4B5243"> Отправить </button>
+                        </div>
+                    </form>
+               </div>
+
+				</div>
+		</li>
+	</ul>
+
+    {% endfor %}
+          {% endif %}
+	<script type="text/javascript">
+$(document).ready(function(){
+ $('.spoiler_links').click(function(){
+  $(this).next('.spoiler_body').toggle('normal');
+  return false;
+ });
+});
+</script>
+	<script type="text/javascript">
+function check(field, flag) {
+ if (flag==1) { for (i=0; i<field.length; i++) field[i].checked = true; }
+ else { for (i=0; i<field.length; i++) field[i].checked = false; }
+}
+</script>
 {% endblock %}
 </div>
+
 </body>
 </html>

@@ -10,45 +10,85 @@ from translate import Translator
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
-import pytesseract
 from django.core.mail import send_mail
 from silmarin.forms import Access
-from silmarin.models import Being, Silmarillion, Person, Status, Quests
+from silmarin.models import Being, Silmarillion, Person, Status, Quests, ActingCharacters
 
 
 def quests(request):
     user = request.user
     if user.is_authenticated:
-        par = Person.objects.get(user=user)
-        context = {
-            'name': par.user,
-            'specie': user.first_name,
-            'position': par.position,
-            'status': par.status,
-        }
-        if user.groups.filter(name="Гильдмастер").exists():
-            # be = Being.objects.get(id_being_id=user.id)
-            beings = Being.objects.all()
-            tryGet = [0 for i in range(len(beings))]
-            quests = Quests.objects.all()
-            return render(request, "quests.html",
-                          {"beings": beings, "tryGet": tryGet, "par": context, "quests": quests})
-        else:
-            creature = []
-            beings = Being.objects.all()
-            tryGet = [0 for i in range(len(beings))]
-            specie = Being.objects.filter(name=user.first_name).values_list('specie', flat=True).first()
-            quests = Quests.objects.all()
-            questforuser=[]
-            for i in range(len(quests)):
-                if par.status in quests[i].statuses.all():
+        if request.method == "GET":
+           par = Person.objects.get(user=user)
+           context = {
+              'name': par.user,
+              'specie': user.first_name,
+              'position': par.position,
+              'status': par.status,
+           }
+           if user.groups.filter(name="Гильдмастер").exists():
+              beings = Being.objects.all()
+              tryGet = [0 for i in range(len(beings))]
+              quests = Quests.objects.all()
+              p = ActingCharacters.objects.all()
+              pr = []
+              for i in range(len(quests)):
+                  person_ids = ActingCharacters.objects.filter(quest=quests[i]).values_list('people', flat=True)
+                  people_id = Person.objects.filter(id__in=person_ids).values_list('user', flat=True)
+                  people = User.objects.filter(id__in=people_id).values_list('username', flat=True)
+                  pr.append([quests[i].name, list(people)])
+              flag = True
+              return render(request, "quests.html",
+                          {"beings": beings, "tryGet": tryGet, "par": context, "quests": quests, "flag": flag, "people": pr})
+           else:
+              flag = False
+              creature = []
+              beings = Being.objects.all()
+              tryGet = [0 for i in range(len(beings))]
+              specie = Being.objects.filter(name=user.first_name).values_list('specie', flat=True).first()
+
+              quests = Quests.objects.all()
+              questforuser=[]
+              for i in range(len(quests)):
+                 if par.status in quests[i].statuses.all():
                     questforuser.append(quests[i])
-            for i in range(len(beings)):
+              for i in range(len(beings)):
                 if beings[i].specie == specie:
                     creature.append(beings[i])
-            return render(request, "quests.html", {"beings": creature, "tryGet": tryGet, "par": context, "quests": questforuser})
+              return render(request, "quests.html", {"beings": creature, "tryGet": tryGet, "par": context, "quests": questforuser, "flag": flag})
+        else:
+            if (request.POST.get('password')):
+                new_password = request.POST.get('password')
+                print(new_password)
+                user.set_password(new_password)
+                user.save()
+                return redirect('/')
+            elif(request.POST.get('list')):
+                list_id = request.POST.getlist('list')
+
+                for i in list_id:
+                    user_instance = User.objects.get(username=i)
+                    email = user_instance.email
+                    #send_mail('Участие в квесте', 'Вы отправили заявку на участие в квесте', settings.EMAIL_HOST_USER, [email])
+                    print(email)
+                    return redirect('/')
+            else:
+               quest_id = request.POST.get('quest_id')
+               person = Person.objects.get(user=request.user)
+               if ActingCharacters.objects.filter(people=person):
+                   messages.error(request, 'Вы уже отправляли заявку на участие в этом квесте')
+                   return redirect('/')
+               else:
+                  try:
+                     ActingCharacters.objects.create(id=ActingCharacters.objects.last().id+1, quest=Quests.objects.get(id=quest_id), people=Person.objects.get(user=request.user))
+                     messages.success(request, 'Вы отправили заявку на участие в квесте')
+                     print("Yes")
+                     return redirect('/')
+                  except:
+                     messages.error(request, 'Что-то пошло не так, попробуйте еще раз')
+                     return redirect('/')
     else:
-        return render(request, 'NoEnter.html')
+      return render(request, 'NoEnter.html')
 
 
 
@@ -139,6 +179,8 @@ def show_index(request):
                specie = Being.objects.filter(name=user.first_name).values_list('specie', flat=True).first()
                status = Status.objects.get(id=Being.objects.get(name=user.first_name).status_id)
                login(request, user)
+               user_group = Group.objects.get(name='Игрок')
+               user_group.user_set.add(user)
                Person.objects.create(user=user, specie=specie, status=status,  position="Игрок")
                return redirect("/info")
             else:
@@ -152,11 +194,6 @@ def show_map(request):
     else:
         return render(request, 'NoEnter.html')
 
-def acc(request):
-    if request.user.is_authenticated:
-       return render(request, "mypage.html")
-    else:
-        return render(request, 'NoEnter.html')
 
 
 
@@ -177,6 +214,10 @@ def secure(request, being_form_id):
                translator = Translator(from_lang="russian", to_lang="English")
                im = str(Being.objects.get(id=being_form_id).name)
                eng = translator.translate(im)
+               if eng.split()[0]=="Torin":
+                   eng="Thorin"
+               if im == "Древень":
+                   eng="Treebeard"
                return redirect("https://tolkiengateway.net/wiki/Category:Images_of_"+eng)
              else:
                tryGet = [0 for i in range(len(beings))]
