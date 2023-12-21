@@ -1,11 +1,5 @@
-import io
-from lib2to3.pgen2 import driver
-
-from PIL import Image
 from django.conf import settings
 from django.contrib import messages
-from django.core.files.images import ImageFile
-from django.http import JsonResponse
 from translate import Translator
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
@@ -115,35 +109,6 @@ def forget(request):
        return redirect('/')
 
 
-'''    
-def view(request):
-   print("dddd")
-   user = request.user
-   if user.is_authenticated:
-       par = Person.objects.get(user = user)
-       context = {
-           'name': par.user,
-           'specie': user.first_name,
-           'position': par.position,
-           'status': par.status,
-       }
-       if user.groups.filter(name="Гильдмастер").exists():
-          #be = Being.objects.get(id_being_id=user.id)
-          beings = Being.objects.all()
-          tryGet = [0 for i in range(len(beings))]
-          return render(request, "quests.html", {"beings": beings, "tryGet": tryGet, "par": context})
-       else:
-           creature=[]
-           beings = Being.objects.all()
-           tryGet = [0 for i in range(len(beings))]
-           specie = Being.objects.filter(name=user.first_name).values_list('specie', flat=True).first()
-           for i in range(len(beings)):
-              if beings[i].specie == specie:
-                  creature.append(beings[i])
-           return render(request, "quests.html", {"beings": creature, "tryGet": tryGet, "par": par})
-   else:
-      return render(request, 'NoEnter.html')
-'''
 
 def show_index(request):
     if request.method == "GET":
